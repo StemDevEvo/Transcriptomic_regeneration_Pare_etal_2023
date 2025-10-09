@@ -1,0 +1,104 @@
+#################
+# Snakefile launching the quality control of a given transcriptome de novo generated, useful if not generated via the trinity pipeline.
+# Needs the config.yaml file in the cd and 3 additional python script to launch some steps.
+##
+# Depedencies :
+# transrate
+# trinity
+# busco
+# RSEM
+# bowtie2
+# samtools
+##
+# Written by Louis Paré, mail : louis.pare@ijm.fr
+################
+
+
+# Path to configuration file.
+configfile: "config.yaml"
+
+
+rule all:
+    input:
+        config["output_E90N50"] + "/E90N50_stats.txt",
+        config["output_quantification"],
+        config["output_bowtie2"],
+        directory(config["output_busco"]+"eukaryota")
+        "busco_metazoa/",
+        "busco_arthropoda/",
+        config["output_transrate"]
+
+
+# Compute E90N50 statistics.
+rule E90N50:
+    input:
+        config["transcriptome"]
+    output:
+        config["output_E90N50"] + "/E90N50_stats.txt"
+    shell:
+        "$TRINITY_HOME/util/TrinityStats.pl  {input} > {output}"
+
+# Launch the Ex90N50 pipeline.
+rule Ex90N50:
+    input:
+        config["transcriptome"]
+    output:
+        directory(config["output_quantification"])
+    params:
+        sample = config["samples_file"],
+        file_type = config["file_type"]
+    threads: config["processor"]
+    shell:
+        "mkdir {output}; ./script/snkmk_ex90n50.py {input} {output} {threads} {params.sample} {params.file_type}"
+
+
+# Launch bowtie2 to map the sample on cdhit output. bowtie2 must be in the PATH.
+rule bowtie2:
+    input:
+        config["transcriptome"]
+    output:
+        directory(config["output_bowtie2"])
+    params:
+        sample = config["samples_file"]
+    threads: config["processor"]
+    shell:
+        "mkdir {output}; ./script/snkmk_bowtie2.py {input} {output} {threads} {params.sample}"
+
+# Launch BUSCO for eukaryota database. BUSCO must be in the PATH.
+rule busco_eukaryota:
+    input:
+        config["transcriptome"]
+    output:
+        directory(config["output_busco"]+"eukaryota")
+    shell:
+        "mkdir {output}; ./script/snkmk_busco.py {output} {input}"
+
+# Launch BUSCO for metazoa database. BUSCO must be in the PATH.
+rule busco_metazoa:
+    input:
+        config["transcriptome"]
+    output:
+        directory(config["output_busco"]+"metazoa")
+    shell:
+        "mkdir {output}; ./script/snkmk_busco.py {output} {input}"
+
+# Launch BUSCO for arthropoda database. BUSCO must be in the PATH.
+rule busco_arthropoda:
+    input:
+        config["transcriptome"]
+    output:
+        directory(config["output_busco"]+"arthropoda")
+    shell:
+        "mkdir {output}; ./script/snkmk_busco.py {output} {input}"
+
+# Launch the Transrate statistics computation. transrate must be in the PATH.
+rule transrate:
+    input:
+        config["transcriptome"]
+    output:
+        config["output_transrate"]
+    params:
+        sample = config["samples_file"]
+    threads: config["processor"]
+    shell:
+        "./script/snkmk_transrate.py {input} {output} {threads} {params.sample}"

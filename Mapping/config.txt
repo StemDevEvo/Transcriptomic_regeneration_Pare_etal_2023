@@ -1,0 +1,37 @@
+##########################
+# Configuration file  for the quantitative transcriptome analysis pipeline.
+#
+# Precisions about the sample file:
+#
+# The sample file is a text file containing one sample per line.
+# In case the experiment is a paired end, each sample must be written this way:
+#
+#       conditions  conditions_rep  path_to_left_read   path_to_right_read
+#
+# Each part must be separated by tabulation (or spaces).
+# Left read correspond to the read "1" and the right read to the read "2"
+# The file must not contain empty lines!!
+# For single end, the 4th column remain empty.
+#
+##########################
+
+# Path to the sample file (see header of this file for more precisions).
+sample_file=sample_file.txt
+
+# Path to the transcriptome to use. (https://www.ebi.ac.uk/ena/browser/view/HBZZ01000001)
+transcriptome=reference_transcriptome.fasta
+
+# Path to the output directory.
+output=out_folder
+
+# Number of threads (processor)
+threads=8
+
+# Path to the gene trans map file
+gene_trans_map=gene_trans_map.txt
+
+# Reads length
+r_length=150
+
+# Fastp parameters (for more information, consult Fastp github page : https://github.com/OpenGene/fastp)
+fastp_parameters="-g "

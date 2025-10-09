@@ -1,0 +1,59 @@
+######################
+# Config file for running the snakemake aimed to asses quality control of a de novo generated transcriptome.
+# Written by Louis Paré : louis.pare@ijm.fr
+######################
+
+### Global parameters
+
+# Number of max processor to use for the different steps.
+processor:
+  12
+
+# Number of max memory to use for the different steps (in Gb).
+memory:
+  20
+
+# Path to the .txt file containing descriptions of the sample in a tab delimited format. (see Trinity wiki page for more information)
+samples_file:
+  "trinity_cond.txt"
+
+
+# Path to the de novo transcriptome to be QC.
+transcriptome:
+  "data/data_test.fasta"
+
+# Type for file used ("fa" for fasta, "fq" for fastq, linked to the sample file.)
+file_type:
+  "fq"
+
+
+###### E90N50 parameters
+
+# Output directory
+output_E90N50:
+  "/mnt/d/Louis/Transcriptome/de_novo_transcriptome_QC/data/E90N50/"
+
+
+###### Bowtie2 parameters
+
+#Output directory
+output_bowtie2:
+  "/mnt/d/Louis/Transcriptome/de_novo_transcriptome_QC/data/bowtie2"
+
+###### Transcript Quantification parameters (Ex90N50)
+
+# Output directory
+output_quantification:
+  "/mnt/d/Louis/Transcriptome/de_novo_transcriptome_QC/data/quantification/"
+
+##### Transrate parameters
+
+# Output directory
+output_transrate:
+  "/mnt/d/Louis/Transcriptome/de_novo_transcriptome_QC/data/transrate/"
+
+#### Busco parameters
+
+# Output directory
+output_busco:
+  "/mnt/d/Louis/Transcriptome/de_novo_transcriptome_QC/data/busco/"
